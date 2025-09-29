@@ -1,0 +1,13 @@
+@mixin text-style(
+  $weight: 600,
+  $style: normal,
+  $size: 40px,
+  $line-height: 1,
+  $letter-spacing: 0
+) {
+  font-weight: $weight;
+  font-style: $style;
+  font-size: $size;
+  line-height: $line-height;
+  letter-spacing: $letter-spacing;
+}

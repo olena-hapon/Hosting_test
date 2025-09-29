@@ -1,0 +1,33 @@
+@font-face {
+  font-family: "SF Pro";
+  src: url("../fonts/SFProDisplay-Regular.woff") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SF Pro";
+  src: url("../fonts/SFProDisplay-Medium.woff") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SF Pro";
+  src: url("../fonts/SFProDisplay-SemiboldItalic.woff") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Base */
+@import "./base/reset";
+@import "./base/vars";
+@import "./base/mixins";
+@import "./base/base";
+@import "./base/utils";
+@import "./base/containers";
+@import "./base/sticky-footer";
+
+/* Blocks */
+@import "./blocks/*.scss";

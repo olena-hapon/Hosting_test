@@ -1,0 +1,84 @@
+.advantages,
+.disadvantages {
+  border: 1px solid var(--blue-color);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px var(--accent);
+  padding: 10px;
+  margin-block-end: 10px;
+  height: fit-content;
+
+  &__wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding-block-end: 5px;
+    margin-block-end: 7px;
+    border-bottom: 1px solid rgba(214, 214, 214, 1);
+  }
+
+  &__wrapLeft {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__title {
+    color: var(--main-color);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  &__list {
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+
+    &--green {
+      .advantages__item {
+        background-color: rgba(202, 255, 202, 1);
+        padding: 6px;
+        border-radius: 10px;
+      }
+    }
+
+    &--red {
+      .disadvantages__item {
+        background-color: rgba(255, 212, 213, 1);
+        padding: 6px;
+        border-radius: 10px;
+      }
+    }
+
+    span {
+      color: var(--main-color);
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    &__item {
+      color: var(--main-color);
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+  }
+}
+
+.list__noShow {
+  .advantages__list, .disadvantages__list {
+    display: none;
+  }
+
+  .card__bottom {
+    width: 100%;
+  }
+
+  .advantages, .disadvantages {
+    width: 100%;
+  }
+}
