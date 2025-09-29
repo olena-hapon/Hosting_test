@@ -1,19 +1,29 @@
-function showMore() {
-  const showMoreBtn = document.querySelector(".hero__show");
-  const text = document.querySelector(".hero__text");
+function initShowMore(containerSelector, textSelector, buttonSelector, lines = 2) {
+  const container = document.querySelector(containerSelector);
+  if (!container) return;
 
-  showMoreBtn.onclick = function () {
+  const text = container.querySelector(textSelector);
+  const btn = container.querySelector(buttonSelector);
+
+  if (!text || !btn) return;
+
+  btn.addEventListener("click", () => {
     const style = window.getComputedStyle(text);
     const lineClamp = text.style.webkitLineClamp || style.webkitLineClamp;
 
     if (lineClamp === "unset" || lineClamp === "none") {
-      text.style.webkitLineClamp = "2";
-      showMoreBtn.textContent = "Show more";
+      text.style.webkitLineClamp = lines;
+      btn.textContent = "Pokaż więcej";
     } else {
       text.style.webkitLineClamp = "unset";
-      showMoreBtn.textContent = "Show less";
+      btn.textContent = "Pokaż mniej";
     }
-  };
+  });
 }
 
-export default showMore;
+export default function showMore() {
+
+  initShowMore(".hero", ".hero__text", ".hero__show", 2);
+
+  initShowMore(".range__text__container", ".range__text", ".range__show", 3);
+}

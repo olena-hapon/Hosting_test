@@ -26,6 +26,7 @@
 
     &--blue {
       color: var(--blue-color);
+      display: inline-block;
     }
   }
 
@@ -63,8 +64,12 @@
     font-size: 16px;
     font-style: normal;
     line-height: 1.4;
-    color: var(--blue-color);
     margin-block-end: 8px;
+
+    & a {
+      color: var(--blue-color);
+    }
+
   }
 }
 
@@ -110,5 +115,6 @@
   .footer__wrap {
     display: flex;
     flex-direction: column;
+    padding-block-start: 50px;
   }
 }

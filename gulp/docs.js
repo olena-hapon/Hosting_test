@@ -1,143 +1,124 @@
 const gulp = require('gulp');
+const fs = require('fs');
 
-//HTML
+// HTML
 const fileInclude = require('gulp-file-include');
 const htmlclean = require('gulp-htmlclean');
 const webpHTML = require('gulp-webp-html');
 
-//Sass
+// SASS
 const sass = require('gulp-sass')(require('sass'));
 const sassGlob = require('gulp-sass-glob');
 const autoprefixer = require('gulp-autoprefixer');
 const csso = require('gulp-csso');
 const webpCSS = require('gulp-webp-css');
-
-const server = require('gulp-server-livereload');
-const clean = require('gulp-clean');
-const fs = require('fs');
 const sourceMaps = require('gulp-sourcemaps');
 const groupMedia = require('gulp-group-css-media-queries');
-const plumber = require('gulp-plumber');
-const notify = require('gulp-notify');
+
+// JS
 const babel = require('gulp-babel');
-
-//Images
-const imagemin = require('gulp-imagemin');
-const webp = require('gulp-webp')
-
-const changed = require('gulp-changed');
-
 const webpack = require('webpack-stream');
-const gulpClean = require('gulp-clean');
 
-gulp.task('clean:docs', function(done) {
-  if (fs.existsSync('./docs/')) {
-    return gulp
-      .src('./docs/', { read: false })
-      .pipe(clean({ force: true }));
+// Server
+const server = require('gulp-server-livereload');
+
+// Images
+const imagemin = require('gulp-imagemin');
+const webp = require('gulp-webp');
+
+// Other
+const changed = require('gulp-changed');
+const clean = require('gulp-clean');
+const plumber = require('gulp-plumber');
+
+// ----------------------
+// Настройка error handler
+const plumberHandler = (title) => ({
+  errorHandler: function(err) {
+    console.error(`${title} error:`, err.message);
+    this.emit('end');
   }
-
-  done()
 });
 
+// ----------------------
+// Очистка папки docs
+gulp.task('clean:docs', function(done) {
+  if (fs.existsSync('./docs/')) {
+    return gulp.src('./docs/', { read: false })
+      .pipe(clean({ force: true }));
+  }
+  done();
+});
 
-
+// ----------------------
+// HTML
 const fileIncludeSettings = {
   prefix: '@@',
   basepath: '@file',
 };
 
-const plumberNotify = (title) => {
-  return {
-    errorHandler: notify.onError({
-      title: title,
-      message: 'Error <%= error.message %>',
-      sound: false
-    }),
-  };
-}
-
 gulp.task('html:docs', function() {
-  return gulp
-    .src(['./src/html/**/*.html', '!./src/html/blocks/*html'])
-    .pipe(changed('./docs/'))
-    .pipe(plumber(plumberNotify('HTML')))
+  return gulp.src(['./src/html/**/*.html', '!./src/html/blocks/*html'])
+    .pipe(plumber(plumberHandler('HTML')))
     .pipe(fileInclude(fileIncludeSettings))
-    .pipe(webpHTML())
     .pipe(htmlclean())
     .pipe(gulp.dest('./docs/'));
 });
 
-
+// ----------------------
+// SASS
 gulp.task('sass:docs', function() {
-  return gulp
-    .src('./src/scss/*.scss')
-    .pipe(changed('./docs/css/'))
-    .pipe(plumber(plumberNotify('SASS')))
+  return gulp.src('./src/scss/*.scss')
+    .pipe(plumber(plumberHandler('SASS')))
     .pipe(sourceMaps.init())
-    .pipe(autoprefixer())
     .pipe(sassGlob())
-    .pipe(webpCSS())
-    .pipe(groupMedia())
     .pipe(sass())
+    .pipe(autoprefixer())
+    .pipe(groupMedia())
     .pipe(csso())
     .pipe(sourceMaps.write())
-    .pipe(gulp.dest('./docs/css/'))
-})
+    .pipe(gulp.dest('./docs/css/'));
+});
 
-
-
-//**- означає всі папки в img, а * - будь-які файли з будь-яким розширенням/
+// ----------------------
+// Images
 gulp.task('images:docs', function() {
-  return gulp
-  .src('./src/img/**/*')
-  .pipe(changed('./docs/img/'))
-  .pipe(webp())
-  .pipe(gulp.dest('./docs/img/'))
-  .src('./src/img/**/*')
-  .pipe(imagemin({ verbose: true }))
-  .pipe(gulp.dest('./docs/img/'))
+  return gulp.src('./src/img/**/*')
+    .pipe(gulp.dest('./docs/img/'));
 });
 
+// ----------------------
+// Fonts
 gulp.task('fonts:docs', function() {
-  return gulp
-  .src('./src/fonts/**/*')
-  .pipe(changed('./docs/fonts/'))
-  .pipe(gulp.dest('./docs/fonts/'))
+  return gulp.src('./src/fonts/**/*')
+    .pipe(gulp.dest('./docs/fonts/'));
 });
 
+// Files
 gulp.task('files:docs', function() {
-  return gulp
-  .src('./src/files/**/*')
-  .pipe(changed('./docs/files/'))
-  .pipe(gulp.dest('./docs/files/'))
+  return gulp.src('./src/files/**/*')
+    .pipe(gulp.dest('./docs/files/'));
 });
 
+// JS
 gulp.task('js:docs', function() {
-  return gulp
-  .src('./src/js/*.js')
-  .pipe(changed('./docs/js/'))
-  .pipe(plumber(plumberNotify('JS')))
-  .pipe(babel())
-  .pipe(webpack(require('./../webpack.config.js')))
-  .pipe(gulp.dest('./docs/js/'))
+  return gulp.src('./src/js/*.js')
+    .pipe(plumber(plumberHandler('JS')))
+    .pipe(babel())
+    .pipe(webpack(require('./../webpack.config.js')))
+    .pipe(gulp.dest('./docs/js/'));
 });
 
+// ----------------------
+// Server
 gulp.task('server:docs', function() {
-  return gulp
-    .src('./docs/')
-    .pipe(server({
-      livereload: true,
-      open: true
-    }))
+  return gulp.src('./docs/')
+    .pipe(server({ livereload: true, open: true }));
 });
 
-// gulp.task('watch:docs', function() {
-//   gulp.watch('./src/scss/**/*.scss', gulp.parallel('sass:docs'));
-//   gulp.watch('./src/**/*.html', gulp.parallel('html:docs'));
-//   gulp.watch('./src/img/**/*', gulp.parallel('images:docs'));
-//   gulp.watch('./src/fonts/**/*', gulp.parallel('fonts:docs'));
-//   gulp.watch('./src/files/**/*', gulp.parallel('files:docs'));
-//   gulp.watch('./src/js/**/*', gulp.parallel('js:docs'));
-// });
-
+// ----------------------
+// Основна збірка
+gulp.task('build:docs', gulp.series(
+  'clean:docs',
+  gulp.parallel('html:docs', 'sass:docs', 'images:docs', 'fonts:docs', 'files:docs', 'js:docs')
+));

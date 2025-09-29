@@ -45,6 +45,11 @@
     padding-block-end: 5px;
     margin-block-end: 7px;
     border-bottom: 1px solid rgba(214, 214, 214, 1);
+    height: 32px;
+
+    & img {
+      height: 100%;
+    }
   }
 
   &__title {
