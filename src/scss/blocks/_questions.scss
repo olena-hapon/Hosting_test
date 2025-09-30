@@ -12,6 +12,7 @@
     @include text-style($size: 26px);
     margin-block-end: 16px;
     color: var(--main-color);
+    padding-inline: 18px;
   }
 
   &__list {
@@ -80,4 +81,8 @@
   .questions__wrap {
     padding: 0;
   }
+
+  .questions__title {
+      padding-inline: 0px;
+    }
 }
